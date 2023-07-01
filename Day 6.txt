@@ -1,0 +1,244 @@
+ #1. Intersection point of two Linked Lists | Amazon | Microsoft | Brute | Better
+
+
+Brute force****************
+
+void insertNode(node* &head,int val) {
+    node* newNode = new node(val);
+    
+    if(head == NULL) {
+        head = newNode;
+        return;
+    }
+    
+    node* temp = head;
+    while(temp->next != NULL) temp = temp->next;
+    
+    temp->next = newNode;
+    return;
+}
+
+//utility function to check presence of intersection
+node* intersectionPresent(node* head1,node* head2) {
+     unordered_set<node*> st;
+    while(head1 != NULL) {
+       st.insert(head1);
+       head1 = head1->next;
+    }
+    while(head2 != NULL) {
+        if(st.find(head2) != st.end()) return head2;
+        head2 = head2->next;
+    }
+    return NULL;
+
+}
+
+Time Complexity: O(n+m)
+
+Reason: Iterating through list 1 first takes O(n), then iterating through list 2 takes O(m). 
+
+Space Complexity: O(n)
+
+
+
+
+ optimal solution****************
+
+ ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+
+    if(headA == NULL || headB == NULL)
+	     return NULL;
+      
+       ListNode* d1 = headA;
+       ListNode* d2 = headB;
+    
+    while(d1 != d2) {
+        d1 = d1 == NULL? headB:d1->next;
+        d2 = d2 == NULL? headA:d2->next;
+    }
+    
+    return d1;
+      
+    }
+
+
+
+
+
+#$##$##$#$####$#$#$$$#$#$#$#$#$#$#$#$#$$$#$#$#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#################$$$$$$$$$$$$$$$$#333232323
+
+#2. Detect a Cycle in a Linked List.
+
+
+bool cycleDetect(node* head) {
+    if(head == NULL) return false;
+    node* fast = head;
+    node* slow = head;
+        
+    while(fast->next != NULL && fast->next->next != NULL) {
+        fast = fast->next->next;
+        slow = slow->next;
+        if(fast == slow) return true;
+    }
+    return false;
+}
+
+
+#############################################################################################################################
+
+@3.  25. Reverse Nodes in k-Group.
+
+
+int lengthOfLinkedList(ListNode* head) {
+    int length = 0;
+    while(head != NULL) {
+        ++length;
+        head = head->next;
+    }
+    return length;
+}
+
+ListNode* reverseKGroup(ListNode* head, int k) {
+        
+        if(head == NULL||head->next == NULL) 
+             return head;
+
+              int length = lengthOfLinkedList(head);
+
+  ListNode* dummyHead = new ListNode(0);
+   dummyHead->next = head;
+    
+    ListNode* pre = dummyHead;
+    ListNode* cur;
+   ListNode* nex;
+
+while(length >= k) {
+        cur = pre->next;
+        nex = cur->next;
+        for(int i=1;i<k;i++) {
+            cur->next = nex->next;
+            nex->next = pre->next;
+            pre->next = nex;
+            nex = cur->next;
+        }
+        pre = cur;
+        length -= k;
+    }
+    return dummyHead->next;
+
+    }
+
+
+$$$%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+#4. 25. Reverse Nodes in k-Group.
+
+
+ SOLUTION 1.
+
+   bool isPalindrome(ListNode* head) {
+         vector<int> arr;
+    while(head != NULL) {
+        arr.push_back(head->val);
+        head = head->next;
+    }
+    for(int i=0;i<arr.size()/2;i++) 
+        if(arr[i] != arr[arr.size()-i-1]) return false;
+    return true;
+    }
+
+SOLUTION 2.
+
+ListNode* reverse(ListNode* ptr) {
+
+    ListNode* pre=NULL;
+   ListNode* nex=NULL;
+    while(ptr!=NULL) {
+        nex = ptr->next;
+        ptr->next = pre;
+        pre=ptr;
+        ptr=nex;
+    }
+    return pre;
+}
+
+bool isPalindrome(ListNode* head) {
+        
+    if(head==NULL||head->next==NULL) 
+      return true;
+        
+   ListNode* slow = head;
+    ListNode* fast = head;
+
+   //find midile of linklist
+
+    while(fast->next!=NULL&&fast->next->next!=NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+        // reverse thr right half
+    slow->next = reverse(slow->next);
+    
+    //moves slow to right half
+
+    slow = slow->next;
+    ListNode* dummy = head;
+    // cheack fo left half or right half in equals  or not.
+
+    while(slow!=NULL) {
+        if(dummy->val != slow->val) return false;
+        dummy = dummy->next;
+        slow = slow->next;
+    }
+    return true;
+
+    }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@5. Find the starting point of the Loop of LinkedList.
+
+
+Brute force&&&&&&&&&&&&&&&&&
+
+ ListNode *detectCycle(ListNode *head) {
+        
+        unordered_set <ListNode*> st;
+          while(head != NULL) {
+        if(st.find(head) != st.end()) return head;
+        st.insert(head);
+        head = head->next;
+    }
+    return NULL;
+  }
+
+Optimal solution&&***
+
+ListNode *detectCycle(ListNode *head) {
+        
+      if(head == NULL || head -> next == NULL) 
+             return NULL;
+
+       ListNode* fast = head;
+       ListNode* slow = head;
+       ListNode* entry= head;
+
+       while(fast -> next && fast ->next->next){
+         slow  = slow->next;
+         fast = fast ->next->next;
+
+         if(slow  == fast){
+           while(slow != entry){
+             slow  = slow->next;
+             entry = entry -> next;
+           }
+           return  entry;
+         }
+       }
+     return NULL;
+
+    }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@6. Flattening a Linked List

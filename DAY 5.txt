@@ -1,0 +1,193 @@
+#1. Reverse linkedlist.
+
+ ListNode* reverseList(ListNode* head) {
+        
+      ListNode *newHead = NULL;
+        while (head != NULL) {
+            ListNode *next = head->next;
+            head->next = newHead;
+            newHead = head;
+            head = next;
+        }
+        return newHead;
+
+
+    }
+
+*****************************************************************************************************************************
+#2. Find middle element in a Linked List
+
+
+#Naive solution.
+
+ListNode* middleNode(ListNode* head) {
+    	int n = 0;
+    	ListNode* temp = head;
+    	while(temp) {
+        	n++;
+        		temp = temp->next;
+    	}
+   	 
+    	temp = head;
+   	 
+    	for(int i = 0; i < n / 2; i++) {
+        		temp = temp->next;
+    	}
+   	 
+    	return temp;
+	}
+
+
+#optimal solution.
+
+ListNode* middleNode(ListNode* head) {
+         ListNode *slow = head, *fast = head;
+        while (fast != NULL && fast->next != NULL)
+            slow = slow->next, fast = fast->next->next;
+        return slow;
+    }
+
+****************************************************************************************************************************
+#3. 21. Merge Two Sorted Lists | Microsoft | Yahoo | Amazon
+
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+
+        // when list1 is empty then 
+        // our output will be same as list2
+
+        if(l1 == NULL) 
+              return l2; 
+
+        // when list2 is empty then our output 
+        // will be same as list1
+
+        if(l2 == NULL) 
+                  return l1;
+
+        // pointing l1 and l2 to smallest and greatest one
+
+        if(l1->val > l2->val) 
+               std::swap(l1,l2);
+
+        // act as head of resultant merged list
+
+        ListNode* res = l1;
+
+        while(l1 != NULL && l2 != NULL) {
+ 
+            ListNode* temp = NULL;
+
+            while(l1 != NULL && l1->val <= l2->val) {
+
+                temp = l1;  //storing last sorted node  
+                l1 = l1->next;
+            }
+
+            // link previous sorted node with 
+            // next larger node in list2
+
+            temp->next = l2;
+            std::swap(l1,l2);
+        }
+
+        return res;
+    }
+
+*****************************************************************************************************************************
+#4. Remove Nth Node From End of Linked List | Amazon | Microsoft | Adobe
+
+
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode * start = new ListNode();
+        start -> next = head;
+        ListNode* fast = start;
+        ListNode* slow = start;     
+
+        for(int i = 1; i <= n; ++i)
+            fast = fast->next;  //n tk fast ko itrete karna hai
+    
+        while(fast->next != NULL)
+        {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        slow->next = slow->next->next;
+        
+        return start->next;
+    }
+*****************************************************************************************************************************
+#5 Add two numbers represented as Linked Lists
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *dummy = new ListNode(); 
+        ListNode *temp = dummy; 
+        int carry = 0;
+        while( (l1 != NULL || l2 != NULL) || carry) {
+            int sum = 0; 
+            if(l1 != NULL) {
+                sum += l1->val; 
+                l1 = l1 -> next; 
+            }
+            
+            if(l2 != NULL) {
+                sum += l2 -> val; 
+                l2 = l2 -> next; 
+            }
+            
+            sum += carry; 
+            carry = sum / 10; 
+            ListNode *node = new ListNode(sum % 10); 
+            temp -> next = node; 
+            temp = temp -> next; 
+        }
+        return dummy -> next; 
+    }
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#6. Delete Node in a Linked List .
+
+
+  void deleteNode(ListNode* node) {
+        
+        node->val = node->next->val;
+        node-> next = node->next->next;
+        return;
+    }
+
+
+%%%linklist**&&
+
+void insertNode(node* &head,int val) {
+
+    node* newNode = new node(val);
+    if(head == NULL) {
+        head = newNode;
+        return;
+    }
+    node* temp = head;
+    while(temp->next != NULL) 
+        temp = temp->next;
+    temp->next = newNode;
+}
+//function to get reference of the node to delete
+node* getNode(node* head,int val) {
+    while(head->num != val) head = head->next;
+    
+    return head;
+}
+//delete function as per the question
+void deleteNode(node* t) {
+    t->num = t->next->num;
+    t->next = t->next->next;
+    return;
+}
+//printing the list function
+void printList(node* head) {
+    while(head->next != NULL) {
+        cout<<head->num<<"->";
+        head = head->next;
+    }
+    cout<<head->num<<"\n";
+}
+

@@ -1,0 +1,282 @@
+#1 Implement Stack Using Arrays.
+
+ class Stack {
+  int size;
+  int * arr;
+  int top;
+  public:
+    Stack() {
+      top = -1;
+      size = 1000;
+      arr = new int[size];
+    }
+  void push(int x) {
+    top++;
+    arr[top] = x;
+  }
+  int pop() {
+    int x = arr[top];
+    top--;
+    return x;
+  }
+  int Top() {
+    return arr[top];
+  }
+  int Size() {
+    return top + 1;
+  }
+};
+
+Q2.  Implement Queue Using Array
+
+class Queue {
+  int * arr;
+  int start, end, currSize, maxSize;
+  public:
+    Queue() {
+      arr = new int[16];
+      start = -1;
+      end = -1;
+      currSize = 0;
+    }
+
+  Queue(int maxSize) {
+    ( * this).maxSize = maxSize;
+    arr = new int[maxSize];
+    start = -1;
+    end = -1;
+    currSize = 0;
+  }
+  void push(int newElement) {
+    if (currSize == maxSize) {
+      cout << "Queue is full\nExiting..." << endl;
+      exit(1);
+    }
+    if (end == -1) {
+      start = 0;
+      end = 0;
+    } else
+      end = (end + 1) % maxSize;
+    arr[end] = newElement;
+    cout << "The element pushed is " << newElement << endl;
+    currSize++;
+  }
+  int pop() {
+    if (start == -1) {
+      cout << "Queue Empty\nExiting..." << endl;
+    }
+    int popped = arr[start];
+    if (currSize == 1) {
+      start = -1;
+      end = -1;
+    } else
+      start = (start + 1) % maxSize;
+    currSize--;
+    return popped;
+  }
+  int top() {
+    if (start == -1) {
+      cout << "Queue is Empty" << endl;
+      exit(1);
+    }
+    return arr[start];
+  }
+  int size() {
+    return currSize;
+  }
+
+Q3. Implement Stack using single Queue
+
+     queue<int> q1,q2;
+public:
+    MyStack() {
+      
+    }
+    
+    void push(int x) {
+            //q1 me push karne wala element (first me rehega)
+        q1.push(x);
+
+         while(!q1.empty()){
+            q2.push(q1.front());
+            q1.pop();
+        //q1 ka element q2 me
+        }
+        
+        //q2 se sare element q1 me dal denge;
+        while(q2.empty() == false)
+        {
+            
+            q1.push(q2.front());
+            q2.pop();
+        }
+    }
+    
+    int pop() {
+         if(q1.size()==0)
+          {
+              return -1;
+              
+          }
+          int res =q1.front();
+          q1.pop();
+        return res;
+        
+    }
+    
+    int top() {
+        int res = q1.front();
+        return res;
+    }
+    
+    bool empty() {
+        if(q1.empty())
+         return  true;
+         return false;
+
+    }
+
+Q4. Implement Queue using Stack.
+
+#Method 1
+
+struct Queue {
+  stack < int > input, output;
+  
+  // Push elements in queue
+  void Push(int data) {
+    // Pop out all elements from the stack input
+    while (!input.empty()) {
+      output.push(input.top());
+      input.pop();
+    }
+    // Insert the desired element in the stack input
+    cout << "The element pushed is " << data << endl;
+    input.push(data);
+    // Pop out elements from the stack output and push them into the stack input
+    while (!output.empty()) {
+      input.push(output.top());
+      output.pop();
+    }
+  }
+  // Pop the element from the Queue
+  int Pop() {
+    if (input.empty()) {
+      cout << "Stack is empty";
+      exit(0);
+    }
+    int val = input.top();
+    input.pop();
+    return val;
+  }
+  // Return the Topmost element from the Queue
+  int Top() {
+    if (input.empty()) {
+      cout << "Stack is empty";
+      exit(0);
+    }
+    return input.top();
+  }
+  // Return the size of the Queue
+  int size() {
+    return input.size();
+  }
+
+#Method 2
+
+public:
+stack < int > input, output;
+    MyQueue() {
+        
+    }
+    
+    void push(int x) {
+        input.push(x);
+    }
+    
+    int pop() {
+         if (output.empty())
+      while (input.size())
+        output.push(input.top()), input.pop();
+
+    int x = output.top();
+    output.pop();
+    return x;
+    }
+    
+    int peek() {
+         if (output.empty())
+      while (input.size())
+        output.push(input.top()), input.pop();
+    return output.top();
+    }
+    
+    bool empty() {
+        if(output.empty() && input.empty())
+        return true;
+        return false;
+    }
+
+**************************************************************************************
+
+Q5 20. Valid Parentheses
+
+
+bool isValid(string s) {
+        stack<char>st; 
+        for(auto it: s) {
+            if(it=='(' || it=='{' || it == '[') st.push(it); 
+            else {
+                if(st.size() == 0) return false; 
+                char ch = st.top(); 
+                st.pop(); 
+                if((it == ')' and ch == '(') or  (it == ']' and ch == '[') or (it == '}' and ch == '{')) continue;
+                else return false;
+            }
+        }
+        return st.empty(); 
+    }
+
+Q6. Next Greater element 
+
+ vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+      unordered_map<int, int>umap;
+           stack<int>st;
+          int n = nums2.size();
+      for(int i=n-1; i>=0; i--){
+            int ele = nums2[i];
+          while(st.empty()== false && st.top() <= ele){
+         st.pop();   
+          }
+          int res = (st.empty()) ? -1 : st.top();
+             umap.insert({ele, res});
+              st.push(ele);
+            }
+          vector<int> ans;
+         for(auto x: nums1) {
+        ans.push_back(umap[x]);
+        }
+return ans;
+    }
+
+M@2.
+
+
+class Solution {
+  public:
+    vector < int > nextGreaterElements(vector < int > & nums) {
+      int n = nums.size();
+      vector < int > nge(n, -1);
+      stack < int > st;
+      for (int i = 2 * n - 1; i >= 0; i--) {
+        while (!st.empty() && st.top() <= nums[i % n]) {
+          st.pop();
+        }
+
+        if (i < n) {
+          if (!st.empty()) nge[i] = st.top();
+        }
+        st.push(nums[i % n]);
+      }
+      return nge;
+    }

@@ -1,0 +1,205 @@
+#1. Rotate a LinkedList
+
+
+ListNode* rotateRight(ListNode* head, int k) {
+
+    if(head == NULL||head->next == NULL||k == 0) 
+    
+    return head;
+
+    //calculating length
+
+    ListNode* temp = head;
+    int length = 1;
+    while(temp->next != NULL) {
+        ++length;
+        temp = temp->next;
+    }
+
+    //link last node to first node
+
+    temp->next = head;
+    k = k%length;       //when k is more than length of list
+    int end = length-k;       //to get end of the list
+    while(end--) temp = temp->next;
+
+    //breaking last node link and pointing to NULL
+    head = temp->next;
+    temp->next = NULL;
+        
+    return head;
+    }
+
+*****************************************************************************************************************************
+#2. Copy list with random pointer.
+
+$%$ BRUTE Force #@#@@
+
+   Node* copyRandomList(Node* head) {
+           unordered_map<Node*,Node*> hashMap;
+    Node* temp = head;
+//first iteration for inserting deep nodes of every node in the hashmap.
+    while(temp != NULL) {
+        Node* newNode = new Node(temp->val);
+        hashMap[temp] = newNode;
+        temp = temp->next;
+    }
+    Node* t = head;
+//second iteration for linking next and random pointer as given question.
+    while(t != NULL) {
+        Node* node = hashMap[t];
+        node->next = (t->next != NULL) ? hashMap[t->next]:NULL;
+        node->random = (t->random != NULL) ? hashMap[t->random]:NULL;
+        t = t->next;
+    }
+    return hashMap[head];
+   }
+
+ **********Optimal Solution *****************
+
+
+  Node* copyRandomList(Node* head) {
+         Node* temp = head;
+	//step 1
+    while(temp != NULL) {
+        Node* newNode = new Node(temp->val);
+        newNode->next = temp->next;
+        temp->next = newNode;
+        temp = temp->next->next;
+    }
+	//step 2
+    Node* itr = head;
+    while(itr != NULL) {
+        if(itr->random != NULL)
+            itr->next->random = itr->random->next;
+        itr = itr->next->next;
+    }
+	//step 3
+    Node* dummy = new Node(0);
+    itr = head;
+    temp = dummy;
+    Node* fast;
+    while(itr != NULL) {
+        fast = itr->next->next;
+        temp->next = itr->next;
+        itr->next = fast;
+        temp = temp->next;
+        itr = fast;
+    }
+    return dummy->next;
+
+}
+
+*****************************************************************************************************************************
+#3. 485. Max Consecutive Ones
+
+
+int findMaxConsecutiveOnes(vector<int>& nums) {
+        int cnt =0;
+        int maxi =0;
+         int n =nums.size();
+        for(int i =0; i<n; i++){
+            if(nums[i] == 1){
+                cnt++;
+            }
+            else {
+                cnt =0;
+            }
+            maxi = max(maxi,cnt);
+        }
+        return maxi;
+    }
+
+
+*****************************************************************************************************************************
+#4. # SUM.
+
+  vector<vector<int>> threeSum(vector<int>& nums) {
+          vector<vector<int>> res; 
+        sort(nums.begin(), nums.end()); 
+        
+        // moves for a
+        for (int i = 0; i < (int)(nums.size())-2; i++) {
+            
+            if (i == 0 || (i > 0 && nums[i] != nums[i-1])) {
+                
+                int lo = i+1, hi = (int)(nums.size())-1, sum = 0 - nums[i];
+                
+                while (lo < hi) {
+                    if (nums[lo] + nums[hi] == sum) {
+                        
+                        vector<int> temp; 
+                        temp.push_back(nums[i]); 
+                        temp.push_back(nums[lo]); 
+                        temp.push_back(nums[hi]); 
+                        res.push_back(temp);
+                        
+                        while (lo < hi && nums[lo] == nums[lo+1]) lo++;
+                        while (lo < hi && nums[hi] == nums[hi-1]) hi--;
+                        
+                        lo++; hi--;
+                    } 
+                    else if (nums[lo] + nums[hi] < sum) lo++;
+                    else hi--;
+               }
+            }
+        }
+        return res;
+    }
+
+
+*****************************************************************************************************************************
+#5. 42. Trapping Rain Water  
+
+int trap(vector<int>& height) {
+        stack<int> st;
+        int n = height.size();
+        int ans =0; 
+        for(int i =0; i<n; i++){
+            while(!st.empty() && height[st.top()]<height[i]){
+                int cur =st.top();
+                st.pop();
+                if(st.empty()){
+                    break;
+                }
+                int diff = i -st.top()-1;
+                ans  += (min(height[st.top()],height[i])-height[cur])*diff;
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+
+
+*****************************************************************************************************************************#6.  26. Remove Duplicates from Sorted Array.
+
+***********Brute force***********
+
+ int removeDuplicates(vector<int>& nums) {
+    int n = nums.size();
+     set < int > set;
+  for (int i = 0; i < n; i++) {
+    set.insert(nums[i]);
+  }
+  int k = set.size();
+  int j = 0;
+  for (int x: set) {
+    nums[j++] = x;
+  }
+  return k;
+    }
+
+
+OPtimal solution******
+
+int removeDuplicates(int arr[], int n)
+{
+  int i = 0;
+  for (int j = 1; j < n; j++) {
+    if (arr[i] != arr[j]) {
+      i++;
+      arr[i] = arr[j];
+    }
+  }
+  return i + 1;
+}

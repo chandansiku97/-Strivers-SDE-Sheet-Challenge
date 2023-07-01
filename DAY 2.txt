@@ -1,0 +1,387 @@
+#1 Rotate Matrix || Rotate Image
+
+********Brute force******
+
+
+vector < vector < int >> rotate(vector < vector < int >> & matrix) {
+
+  int n = matrix.size();
+  vector < vector < int >> rotated(n, vector < int > (n, 0));
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      rotated[j][n - i - 1] = matrix[i][j];
+
+    }
+  }
+  return rotated;
+}
+
+
+***************optimal  solution *****************
+
+void rotate(vector < vector < int >> & matrix) {
+  int n = matrix.size();
+
+  //step 1. transposing the matrix.
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < i; j++) {
+      swap(matrix[i][j], matrix[j][i]);
+    }
+  }
+  // Step 2. reversing each row of the matrix.
+
+  for (int i = 0; i < n; i++) {
+    reverse(matrix[i].begin(), matrix[i].end());
+  }
+}
+
+
+************************************************************************************************************************************************
+#2. Merge Overlapping Intervals || 56. Merge Intervals
+
+ ***************Brute Force***************
+
+ vector<vector<int>> merge(vector<vector<int>>intervals) {
+        int n = intervals.size();
+	 sort(intervals.begin(), intervals.end());
+	vector <vector< int>> ans;
+
+	 for (int i = 0; i < n; i++) {
+
+        int start = intervals[i][0]; // first element of interval. (1,_)
+        int end = intervals[i][1];   // second element of interval. (_ ,3)
+
+		//since the intervals already lies 
+        //in the data structure present we continue
+
+		 if (!ans.empty()) {
+            if (start <= ans.back()[1]) {
+                continue;
+            }
+        }
+		for (int j = i + 1; j < n; j++) {
+            if (intervals[j][0] <= end) {
+                end = max(end, intervals[j][1]);
+            }
+        }
+	    end = max(end, intervals[i][1]);
+
+        ans.push_back({start, end});
+    }
+
+    return ans;
+        
+    }
+
+
+*******************Optimal solution**********************
+
+vector<vector<int>> merge(vector<vector<int>>intervals) {
+        int n = intervals.size();
+	 sort(intervals.begin(), intervals.end());
+	vector <vector< int>> ans;
+
+	 for (int i = 0; i < n; i++) {
+               if (ans.empty() || intervals[i][0] >ans.back()[1] ){
+                   ans.push_back(intervals[i]);
+               } 
+               else{
+                   ans.back()[1] = max(ans.back()[1], intervals[i][1]);
+               }
+           }
+    return ans;
+        
+    }
+
+************************************************************************************************************************************************
+
+#3, Merge two sorted arrays without extra space || 88. Merge Sorted Array. || Merge Two Sorted Arrays.
+
+************Brute Fosrce ******************
+ 
+
+ void mergeTwoSortedArraysWithoutExtraSpace(vector<long long> &a, vector<long long> &b){
+	// Write your code here
+	 int n = a.size();
+	 int m = b.size();
+
+	 int arr3[n+m];
+    int k = 0;
+
+    for (int i = 0; i < n; i++) {
+      arr3[k++] = a[i];
+    }
+    for (int i = 0; i < m; i++) {
+      arr3[k++] = b[i];
+    }
+    sort(arr3,arr3+m+n);
+    k = 0;
+    for (int i = 0; i < n; i++) {
+      a[i] = arr3[k++];
+    }
+    for (int i = 0; i < m; i++) {
+      b[i] = arr3[k++];
+    }
+
+}
+
+
+*************optimal Solution M#1******************
+
+void mergeTwoSortedArraysWithoutExtraSpace(vector<long long> &a, vector<long long> &b){
+	
+
+	int n= a.size();
+	int m = b.size();
+
+int i, k;
+  for (i = 0; i < n; i++) {
+    // take first element from arr1 
+    // compare it with first element of second array
+    // if condition match, then swap
+    if (a[i] > b[0]) {
+      int temp = a[i];
+      a[i] = b[0];
+      b[0] = temp;
+    }
+
+    // then sort the second array
+    // put the element in its correct position
+    // so that next cycle can swap elements correctly
+
+    int first = b[0];
+
+    // insertion sort is used here
+    for (k = 1; k < m && b[k] < first; k++) {
+      b[k - 1] = b[k];
+    }
+    b[k - 1] = first;
+  }
+}
+
+*****************Optimal Solution M#2*****************
+
+ void merge(int ar1[], int ar2[], int n, int m) {
+  // code here 
+  int gap = ceil((float)(n + m) / 2); 
+  while (gap > 0) {
+    int i = 0;
+    int j = gap;
+    while (j < (n + m)) {
+
+      if (j < n && ar1[i] > ar1[j]) {
+        swap(ar1[i], ar1[j]);
+      } 
+     else if (j >= n && i < n && ar1[i] > ar2[j - n]) {
+        swap(ar1[i], ar2[j - n]);
+      }
+    else if (j >= n && i >= n && ar2[i - n] > ar2[j - n]) {
+        swap(ar2[i - n], ar2[j - n]);
+      }
+      j++;
+      i++;
+    }
+    if (gap == 1) {
+      gap = 0;
+    } else {
+      gap = ceil((float) gap / 2);
+    }
+  }
+}
+
+
+************************************************************************************************************************************************#4 Find the duplicate number | Leetcode |
+
+**************** Brute Force*************************
+
+int findDuplicate(vector < int > & arr) {
+  int n = arr.size();
+  sort(arr.begin(), arr.end());
+  for (int i = 0; i < n - 1; i++) {
+    if (arr[i] == arr[i + 1]) {
+      return arr[i];
+    }
+  }
+}
+
+
+
+***************Better Solution ********************
+
+Approach: Take a frequency array of size N+1 and initialize it to 0. Now traverse through the array and if the frequency of the element is 0 increase it by 1, else if the frequency is not 0 then that element is the required answer.
+
+
+int findDuplicate(vector < int > & arr) {
+  int n = arr.size();
+  int freq[n + 1] = {
+    0
+  };
+  for (int i = 0; i < n; i++) {
+    if (freq[arr[i]] == 0) {
+      freq[arr[i]] += 1;
+    } else {
+      return arr[i];
+    }
+  }
+  return 0;
+}
+
+
+*******************OPtimal situation ****************
+
+
+int findDuplicate(vector < int > & nums) {
+  int slow = nums[0];
+  int fast = nums[0];
+  do {
+    slow = nums[slow];
+    fast = nums[nums[fast]];
+  } while (slow != fast);
+  fast = nums[0];
+  while (slow != fast) {
+    slow = nums[slow];
+    fast = nums[fast];
+  }
+  return slow;
+}
+
+
+************************************************************************************************************************************************
+268. Missing Number
+
+ int missingNumber(vector<int>& nums) {
+        int N = nums.size();
+        int sum = ((N)*(N+1))/2 ;
+         int temp = 0;
+     for(int i : nums){
+          temp +=  i;
+     }
+    return sum-temp;
+     
+    }
+
+#5 Find the repeating and missing numbers. 
+
+******************Brute force *************
+
+vector<int> find_missing_repeating(vector<int> array)
+{
+    int n = array.size() + 1;
+
+    vector<int> substitute(n, 0); // initializing the substitute array with 0 of size n+1.
+
+    vector<int> ans;              // initializing the answer  array .
+
+    for (int i = 0; i < array.size(); i++)
+    {
+        substitute[array[i]]++;
+    }
+
+    for (int i = 1; i <= array.size(); i++)
+    {
+        if (substitute[i] == 0 || substitute[i] > 1)
+        {
+            ans.push_back(i);
+        }
+    }
+
+    return ans;
+}
+
+
+**************Optimal solution  #1 **************
+
+vector<int>missing_repeated_number(const vector<int> &A) {
+    long long int len = A.size();
+
+    long long int S = (len * (len+1) ) /2;
+    long long int P = (len * (len +1) *(2*len +1) )/6;
+    long long int missingNumber=0, repeating=0;
+     
+    for(int i=0;i<A.size(); i++){
+       S -= (long long int)A[i];
+       P -= (long long int)A[i]*(long long int)A[i];
+    }
+     
+    missingNumber = (S + P/S)/2;
+
+    repeating = missingNumber - S;
+
+    vector <int> ans;
+
+    ans.push_back(repeating);
+    ans.push_back(missingNumber);
+
+    return ans;
+}
+
+
+
+**************Optimal solution  #2**********************
+
+ /* Will hold xor of all elements and numbers from 1 to n */
+    int xor1;
+
+    /* Will have only single set bit of xor1 */
+    int set_bit_no;
+
+    int i;
+    int x = 0; // missing
+    int y = 0; // repeated
+    int n = arr.size();
+
+    xor1 = arr[0];
+
+    /* Get the xor of all array elements */
+    for (i = 1; i < n; i++)
+        xor1 = xor1 ^ arr[i];
+
+    /* XOR the previous result with numbers from 1 to n */
+    for (i = 1; i <= n; i++)
+        xor1 = xor1 ^ i;
+
+    /* Get the rightmost set bit in set_bit_no */
+    set_bit_no = xor1 & ~(xor1 - 1);
+
+    /* Now divide elements into two sets by comparing a rightmost set bit
+       of xor1 with the bit at the same position in each element.
+       Also, get XORs of two sets. The two XORs are the output elements.
+       The following two for loops serve the purpose */
+
+    for (i = 0; i < n; i++) {
+        if (arr[i] & set_bit_no)
+            /* arr[i] belongs to first set */
+            x = x ^ arr[i];
+
+        else
+            /* arr[i] belongs to second set */
+            y = y ^ arr[i];
+    }
+
+    for (i = 1; i <= n; i++) {
+        if (i & set_bit_no)
+            /* i belongs to first set */
+            x = x ^ i;
+
+        else
+            /* i belongs to second set */
+            y = y ^ i;
+    }
+
+    // NB! numbers can be swapped, maybe do a check ?
+    int x_count = 0;
+    for (int i=0; i<n; i++) {
+        if (arr[i]==x)
+            x_count++;
+    }
+    
+    if (x_count==0)
+        return {y, x};
+    
+    return {x, y};
+}
+
+************************************************************************************************************************************************
+#6. COUNT INVERSIONS in an ARRAY | Leetcode

@@ -1,0 +1,449 @@
+#1 SET MATRIX ZEROES
+
+********BRUTE force******
+
+
+void markRow(vector<vector<int>> &matrix, int n, int m, int i) {
+    // set all non-zero elements as -1 in the row i:
+    for (int j = 0; j < m; j++) {
+        if (matrix[i][j] != 0) {
+            matrix[i][j] = -1;
+        }
+    }
+}
+
+
+void markCol(vector<vector<int>> &matrix, int n, int m, int j) {
+    // set all no..............n-zero elements as -1 in the col j:
+    for (int i = 0; i < n; i++) {
+        if (matrix[i][j] != 0) {
+            matrix[i][j] = -1;
+        }
+    }
+}
+
+vector<vector<int>> zeroMatrix(vector<vector<int>> &matrix, int n, int m) {
+
+    // Set -1 for rows and cols
+    // that contains 0. Don't mark any 0 as -1:
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (matrix[i][j] == 0) {
+                markRow(matrix, n, m, i);
+                markCol(matrix, n, m, j);
+            }
+        }
+    }
+
+    // Finally, mark all -1 as 0:
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (matrix[i][j] == -1) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    return matrix;
+}
+
+Time Complexity: O((N*M)*(N + M)) + O(N*M), where N = no. of rows in the matrix and M = no. of columns in the matrix.
+
+  
+******************** BETTER Solution *************************************
+  
+NOTE: if void function is there  than we have to use n & m like this and we don't have return anything.
+           int n = matrix.size();
+	      int  m = matrix[0].size();
+
+
+vector<vector<int>> zeroMatrix(vector<vector<int>> &matrix, int n, int m) {
+
+    int row[n] = {0}; // row array
+    int col[m] = {0}; // col array
+
+    // Traverse the matrix:
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (matrix[i][j] == 0) {
+                // mark ith index of row wih 1:
+                row[i] = 1;
+
+                // mark jth index of col wih 1:
+                col[j] = 1;
+            }
+        }
+    }
+
+    // Finally, mark all (i, j) as 0
+    // if row[i] or col[j] is marked with 1.
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (row[i] || col[j]) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    return matrix;
+}
+
+
+
+ *************************OPTIMAL  Solution  ****************************************
+
+
+
+vector<vector<int>> zeroMatrix(vector<vector<int>> &matrix, int n, int m) {
+
+    // int row[n] = {0}; --> matrix[..][0]
+    // int col[m] = {0}; --> matrix[0][..]
+
+    int col0 = 1;
+    // step 1: Traverse the matrix and
+    // mark 1st row & col accordingly:
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (matrix[i][j] == 0) {
+                // mark i-th row:
+                matrix[i][0] = 0;
+
+                // mark j-th column:
+                if (j != 0)
+                    matrix[0][j] = 0;
+                else
+                    col0 = 0;
+            }
+        }
+    }
+
+    // Step 2: Mark with 0 from (1,1) to (n-1, m-1):
+
+    for (int i = 1; i < n; i++) {
+        for (int j = 1; j < m; j++) {
+            if (matrix[i][j] != 0) {
+                // check for col & row:
+
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    //step 3: Finally mark the 1st col & then 1st row:
+
+    if (matrix[0][0] == 0) {
+        for (int j = 0; j < m; j++) {
+            matrix[0][j] = 0;
+        }
+    }
+    if (col0 == 0) {
+        for (int i = 0; i < n; i++) {
+            matrix[i][0] = 0;
+        }
+    }
+
+    return matrix;
+}
+
+************************************************************************************************************************************************
+
+#2 118. Pascal's Triangle
+
+
+In pascal's Triangle Three type of qustion is there.
+
+1. Find the element at position (r,c)
+        
+    int nCr(int n, int r) {
+    long long res = 1;
+
+    // calculating nCr:
+    for (int i = 0; i < r; i++) {
+        res = res * (n - i);
+        res = res / (i + 1);
+    }
+    return res;
+}
+
+
+
+2. Print any Nth Row of the Pascal triangle.
+
+void pascalTriangle(int n) {
+    long long ans = 1;
+    cout << ans << " "; // printing 1st element
+
+    //Printing the rest of the part:
+    for (int i = 1; i < n; i++) {
+        ans = ans * (n - i);
+        ans = ans / i;
+        cout << ans << " ";
+    }
+    cout << endl;
+}
+
+3. Print The entire Pascal Triangle.
+
+vector<int> generateRow(int row) {
+    long long ans = 1;
+    vector<int> ansRow;
+    ansRow.push_back(1); //inserting the 1st element
+
+    //calculate the rest of the elements:
+    for (int col = 1; col < row; col++) {
+        ans = ans * (row - col);
+        ans = ans / col;
+        ansRow.push_back(ans);
+    }
+    return ansRow;
+}
+
+vector<vector<int>> pascalTriangle(int n) {
+    vector<vector<int>> ans;
+
+    //store the entire pascal's triangle:
+    for (int row = 1; row <= n; row++) {
+        ans.push_back(generateRow(row));
+    }
+    return ans;
+}
+
+118. Pascal's Triangle {https://leetcode.com/problems/pascals-triangle/description/}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************************************************************************************************************************
+#3 Next greater Permutation
+
+
+vector<int> nextGreaterPermutation(vector<int> &A) {
+    int n = A.size(); // size of the array.
+
+    // Step 1: Find the break point:
+    int ind = -1; // break point
+    for (int i = n - 2; i >= 0; i--) {
+        if (A[i] < A[i + 1]) {
+            // index i is the break point
+            ind = i;
+            break;
+        }
+    }
+
+    // If break point does not exist:
+    if (ind == -1) {
+        // reverse the whole array:
+        reverse(A.begin(), A.end());
+        return A;
+    }
+
+    // Step 2: Find the next greater element
+    //         and swap it with arr[ind]:
+
+    for (int i = n - 1; i > ind; i--) {
+        if (A[i] > A[ind]) {
+            swap(A[i], A[ind]);
+            break;
+        }
+    }
+
+    // Step 3: reverse the right half:
+    reverse(A.begin() + ind + 1, A.end());
+
+    return A;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+************************************************************************************************************************************************
+#4 Kadane’s Algorithm : Maximum Subarray Sum in an Array.
+
+**Naive Approach (Brute-force approach): **
+
+int maxSubarraySum(int arr[], int n) {
+    int maxi = INT_MIN; // maximum sum
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            // subarray = arr[i.....j]
+            int sum = 0;
+
+            //add all the elements of subarray:
+            for (int k = i; k <= j; k++) {
+                sum += arr[k];
+            }
+
+            maxi = max(maxi, sum);
+        }
+    }
+
+    return maxi;
+}
+
+
+**Better Approach (Using two loops): **
+
+int maxSubarraySum(int arr[], int n) {
+
+    int maxi = INT_MIN; // maximum sum
+
+    for (int i = 0; i < n; i++) {
+        int sum = 0;
+        for (int j = i; j < n; j++) {
+            // current subarray = arr[i.....j]
+
+            //add the current element arr[j]
+            // to the sum i.e. sum of arr[i...j-1]
+            sum += arr[j];
+
+            maxi = max(maxi, sum); // getting the maximum
+        }
+    }
+
+    return maxi;
+}
+
+
+
+***Optimal Approach (Using Kadane’s Algorithm): ****
+
+1. We will run a loop(say i) to iterate the given array.
+2. Now, while iterating we will add the elements to the sum variable and consider the maximum one.
+3. If at any point the sum becomes negative we will set the sum to 0 as we are not going to consider it as a part of our answer.
+
+
+long long maxSubarraySum(int arr[], int n) {
+    long long maxi = LONG_MIN; // maximum sum
+    long long sum = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        sum += arr[i];
+
+        if (sum > maxi) {
+            maxi = sum;
+        }
+
+        // If sum < 0: discard the sum calculated
+        if (sum < 0) {
+            sum = 0;
+        }
+    }
+
+    // To consider the sum of the empty subarray
+    // uncomment the following check:
+
+    //if (maxi < 0) maxi = 0;
+
+    return maxi;
+}
+
+
+*************ON leecode*************
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+
+        int n = nums.size();
+        int maxi = INT_MIN;  // maximum sum
+        int sum = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        sum += nums[i];
+
+        maxi = max(sum,maxi);
+
+        // If sum < 0: discard the sum calculated
+        if (sum < 0) {
+            sum = 0;
+        }
+    }
+
+    // To consider the sum of the empty subarray
+    // uncomment the following check:
+
+    //if (maxi < 0) maxi = 0;
+
+    return maxi;
+        
+    }
+};
+
+************************************************************************************************************************************************
+#5 Sort an array of 0's 1's & 2's
+
+
+void sortArray(vector<int>& arr, int n) {
+
+    int low = 0, mid = 0, high = n - 1; // 3 pointers
+
+    while (mid <= high) {
+        if (arr[mid] == 0) {
+            swap(arr[low], arr[mid]);
+            low++;
+            mid++;
+        }
+        else if (arr[mid] == 1) {
+            mid++;
+        }
+        else {
+            swap(arr[mid], arr[high]);
+            high--;
+        }
+    }
+}
+
+
+
+
+************************************************************************************************************************************************
+#6 Best Time to Buy and Sell Stock.
+
+
+#include <bits/stdc++.h> 
+int maximumProfit(vector<int> &prices){
+    // Write your code here.
+    int maxPro = 0;
+    int n = prices.size();
+    int minPrice = INT_MAX;
+
+    for (int i = 0; i < prices.size(); i++) {
+        minPrice = min(minPrice, prices[i]);
+        maxPro = max(maxPro, prices[i] - minPrice);
+    }
+    
+    return maxPro;
+}
+
+
+Time complexity: O(n)
+
+Space Complexity: O(1)
